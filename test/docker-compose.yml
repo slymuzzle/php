@@ -1,0 +1,18 @@
+version: '3.4'
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    volumes:
+      - ".:/app"
+    ports:
+      - '80:80'
+    depends_on:
+      - fpm
+
+  fpm:
+    image: jorge07/alpine-php:${VERSION}-dev
+    volumes:
+      - ".:/app"
