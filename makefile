@@ -1,4 +1,4 @@
-REPO:=sly-soft-community/php
+REPO:=slymuzzle/php
 DOCKER_RUN:=docker run --rm -v $(PWD):/var/www/app ${REPO}:${VERSION}
 DOCKER_RUN_DEV:=$(DOCKER_RUN)-dev
 build:
