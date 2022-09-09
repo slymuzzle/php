@@ -1,13 +1,20 @@
 # **************
+# * User args *
+# **************
+ARG USER=non-root
+ARG USER_UID=1000
+ARG USER_GID=${USER_UID}
+
+# **************
 # * Main image *
 # **************
 FROM alpine:3.14 as main
 
 LABEL maintainer="Egor Cherepovich <slymuzzle@gmail.com>"
 
-ARG USER=non-root
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
+ARG USER
+ARG USER_UID
+ARG USER_GID
 
 # Create group
 RUN addgroup \
@@ -70,7 +77,7 @@ CMD ["/usr/sbin/php-fpm7", "-R", "--nodaemonize"]
 
 EXPOSE 9000
 
-WORKDIR /app
+WORKDIR /var/www/app
 
 # Set the default user
 # USER ${USER}
@@ -80,9 +87,8 @@ WORKDIR /app
 # *************
 FROM main as dev
 
-ARG USER=root
-ARG PASSWORD=root
-
+ARG SSH_USER=root
+ARG SSH_USER_PASSWORD=root
 ARG COMPOSER_VERSION=2.4.1
 
 RUN apk add -U --no-cache \
@@ -100,16 +106,17 @@ RUN apk add -U --no-cache \
     && rm -rf /var/cache/apk/* \
     # Create ssh user for dev.
     && sed -i s/#PermitRootLogin.*/PermitRootLogin\ yes/ /etc/ssh/sshd_config \
-    && echo "${USER}:${PASSWORD}" | chpasswd \
+    && echo "${SSH_USER}:${SSH_USER_PASSWORD}" | chpasswd \
     && ssh-keygen -A \
     # Download composer.
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer --version=${COMPOSER_VERSION}
 
 ADD devfs /
 
-RUN HOST_IP="$(/sbin/ip route|awk '/default/ { print $3 }')" \
-    && sed -i "$ a\xdebug.remote_host=${HOST_IP}" /etc/php7/conf.d/00_xdebug.ini
+ARG USER
+
+USER ${USER}
 
 CMD ["supervisord", "--nodaemon", "--configuration", "/etc/supervisord/conf.d/supervisord.conf"]
 
-EXPOSE 22 9000
+EXPOSE 22 9003

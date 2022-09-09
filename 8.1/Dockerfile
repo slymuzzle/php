@@ -1,13 +1,20 @@
 # **************
+# * User args *
+# **************
+ARG USER=non-root
+ARG USER_UID=1000
+ARG USER_GID=${USER_UID}
+
+# **************
 # * Main image *
 # **************
 FROM alpine:3.16 as main
 
 LABEL maintainer="Egor Cherepovich <slymuzzle@gmail.com>"
 
-ARG USER=non-root
-ARG USER_UID=1000
-ARG USER_GID=${USER_UID}
+ARG USER
+ARG USER_UID
+ARG USER_GID
 
 # Create group
 RUN addgroup \
@@ -68,19 +75,18 @@ CMD ["/usr/sbin/php-fpm81", "-R", "--nodaemonize"]
 
 EXPOSE 9000
 
-WORKDIR /app
+WORKDIR /var/www/app
 
 # *************
 # * Dev image *
 # *************
 FROM main as dev
 
-ARG USER=root
-ARG PASSWORD=root
-
+ARG SSH_USER=root
+ARG SSH_USER_PASSWORD=root
 ARG COMPOSER_VERSION=2.4.1
 
-USER ${USER}
+USER root
 
 RUN apk add -U --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/   \
         php81-pear \
@@ -97,12 +103,16 @@ RUN apk add -U --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge
     && rm -rf /var/cache/apk/* \
     # Create ssh user for dev.
     && sed -i s/#PermitRootLogin.*/PermitRootLogin\ yes/ /etc/ssh/sshd_config \
-    && echo "${USER}:${PASSWORD}" | chpasswd \
+    && echo "${SSH_USER}:${SSH_USER_PASSWORD}" | chpasswd \
     && ssh-keygen -A \
     # Download composer.
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer --version=${COMPOSER_VERSION}
 
 ADD devfs /
+
+ARG USER
+
+USER ${USER}
 
 CMD ["supervisord", "--nodaemon", "--configuration", "/etc/supervisord/conf.d/supervisord.conf"]
 
