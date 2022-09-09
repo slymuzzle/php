@@ -68,7 +68,14 @@ RUN addgroup \
     php7-dom \
     php7-redis \
     php7-fpm \
-    php7-sodium
+    php7-sodium \
+    php7-pdo \
+    php7-pdo_pgsql \
+    php7-pgsql \
+    php7-posix \
+    php7-redis \
+    php7-tokenizer \
+    php7-fileinfo
 
 # iconv hack https://github.com/docker-library/php/issues/240
 ENV LD_PRELOAD="/usr/lib/preloadable_libiconv.so php"
@@ -96,6 +103,7 @@ ARG USER
 ARG COMPOSER_VERSION=2.4.1
 
 RUN apk add -U --no-cache \
+        shadow \
         php7-pear \
         supervisor \
         autoconf \

@@ -65,6 +65,13 @@ RUN addgroup \
     php81-dom \
     php81-fpm \
     php81-sodium \
+    php81-pdo \
+    php81-pdo_pgsql \
+    php81-pgsql \
+    php81-posix \
+    php81-redis \
+    php81-tokenizer \
+    php81-fileinfo \
     # Iconv Fix
     php81-pecl-apcu \
     && ln -s /usr/bin/php81 /usr/bin/php
@@ -92,6 +99,7 @@ ARG COMPOSER_VERSION=2.4.1
 USER root
 
 RUN apk add -U --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/   \
+        shadow \
         php81-pear \
         supervisor \
         autoconf \
