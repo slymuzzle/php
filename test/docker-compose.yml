@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: nginx/Dockerfile
     volumes:
-      - ".:/app"
+      - ".:/var/www/app"
     ports:
       - '80:80'
     depends_on:
@@ -15,4 +15,4 @@ services:
   fpm:
     image: jorge07/alpine-php:${VERSION}-dev
     volumes:
-      - ".:/app"
+      - ".:var/www/app"

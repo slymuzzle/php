@@ -16,6 +16,9 @@ ARG USER
 ARG USER_UID
 ARG USER_GID
 
+# Path for php-fpm-healthcheck script
+ENV FCGI_STATUS_PATH=/fpm_status
+
 # Create group
 RUN addgroup \
     --gid ${USER_GID} \
@@ -25,8 +28,8 @@ RUN addgroup \
     --uid ${USER_UID} \
     --disabled-password \
     --gecos "" \
+    --home "/home/${USER}" \
     --ingroup ${USER} \
-    --no-create-home \
     ${USER} \
     && apk --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/main add \
     icu-libs \
@@ -37,6 +40,7 @@ RUN addgroup \
     && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ --allow-untrusted gnu-libiconv \
     # Packages
     tini \
+    fcgi \
     php81 \
     php81-dev \
     php81-common \
@@ -82,15 +86,13 @@ WORKDIR /var/www/app
 # *************
 FROM main as dev
 
-ARG SSH_USER=root
-ARG SSH_USER_PASSWORD=root
+ARG USER
 ARG COMPOSER_VERSION=2.4.1
 
 USER root
 
 RUN apk add -U --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/   \
         php81-pear \
-        openssh \
         supervisor \
         autoconf \
         git \
@@ -99,12 +101,11 @@ RUN apk add -U --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge
         make \
         zip \
         php81-xdebug \
+    # Create folder for supervisord pid-file
+    && mkdir /var/run/supervisord \
+    && chown ${USER}:${USER} /var/run/supervisord \
     # Delete APK cache.
     && rm -rf /var/cache/apk/* \
-    # Create ssh user for dev.
-    && sed -i s/#PermitRootLogin.*/PermitRootLogin\ yes/ /etc/ssh/sshd_config \
-    && echo "${SSH_USER}:${SSH_USER_PASSWORD}" | chpasswd \
-    && ssh-keygen -A \
     # Download composer.
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer --version=${COMPOSER_VERSION}
 
