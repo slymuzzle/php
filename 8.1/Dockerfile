@@ -46,6 +46,7 @@ RUN addgroup \
     php81-common \
     php81-gd \
     php81-xmlreader \
+    php81-xmlwriter \
     php81-bcmath \
     php81-ctype \
     php81-curl \
@@ -99,6 +100,9 @@ ARG COMPOSER_VERSION=2.4.1
 USER root
 
 RUN apk add -U --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/   \
+        bash \
+        nodejs \
+        yarn \
         shadow \
         php81-pear \
         supervisor \

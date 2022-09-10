@@ -43,6 +43,7 @@ RUN addgroup \
     php7-apcu \
     php7-gd \
     php7-xmlreader \
+    php7-xmlwriter \
     php7-bcmath \
     php7-ctype \
     php7-curl \
@@ -103,6 +104,9 @@ ARG USER
 ARG COMPOSER_VERSION=2.4.1
 
 RUN apk add -U --no-cache \
+        bash \
+        nodejs \
+        yarn \
         shadow \
         php7-pear \
         supervisor \

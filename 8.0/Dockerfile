@@ -41,6 +41,7 @@ RUN addgroup \
     php8-common \
     php8-gd \
     php8-xmlreader \
+    php8-xmlwriter \
     php8-bcmath \
     php8-ctype \
     php8-curl \
@@ -94,6 +95,9 @@ ARG USER
 ARG COMPOSER_VERSION=2.4.1
 
 RUN apk add -U --no-cache \
+        bash \
+        nodejs \
+        yarn \
         shadow \
         php8-pear \
         supervisor \
