@@ -1,0 +1,45 @@
+name: PR checks
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  pr:
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ["7.4", "8.0", "8.1" ]
+
+    name: ${{ matrix.version }}
+    runs-on: ubuntu-22.04
+
+    env:
+      VERSION: ${{ matrix.version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build
+        run: |
+           docker buildx create --name php
+           docker buildx use php
+           docker buildx inspect --bootstrap
+           ARCHS="linux/arm64" make build
+           docker manifest inspect -v slymuzzle/php:${VERSION}
+
+      - name: Run
+        run: |
+          make run-detached
+
+      - name: Test Main
+        run: |
+          make test-main

@@ -13,6 +13,6 @@ services:
       - fpm
 
   fpm:
-    image: jorge07/alpine-php:${VERSION}-dev
+    image: slymuzzle/php:${VERSION}-dev
     volumes:
-      - ".:var/www/app"
+      - ".:/var/www/app"

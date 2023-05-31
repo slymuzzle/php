@@ -67,6 +67,8 @@ RUN addgroup \
     php81-fpm \
     php81-sodium \
     php81-pdo \
+    php81-pdo_sqlite \
+    php81-sqlite3 \
     php81-pdo_pgsql \
     php81-pgsql \
     php81-posix \
@@ -95,7 +97,7 @@ WORKDIR /var/www/app
 FROM main as dev
 
 ARG USER
-ARG COMPOSER_VERSION=2.4.1
+ARG COMPOSER_VERSION=2.5.5
 
 USER root
 

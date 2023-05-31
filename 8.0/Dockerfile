@@ -62,6 +62,8 @@ RUN addgroup \
     php8-fpm \
     php8-sodium \
     php8-pdo \
+    php8-pdo_sqlite \
+    php8-sqlite3 \
     php8-pdo_pgsql \
     php8-pgsql \
     php8-posix \
