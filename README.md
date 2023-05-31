@@ -1,6 +1,15 @@
 # PHP alpine docker image
 https://hub.docker.com/r/slymuzzle/php
 
+This image works under unprivileged user
+
+### Example of change uid and gid
+```
+&& usermod --uid ${USER_UID} webuser \
+    && groupmod --gid ${USER_GID} webgroup\
+    && find / -user 9999 -exec chown webuser:webgroup {} \;
+```
+
 ### Example of permissions set
 ```
 RUN find /www -type d -exec chmod -R 555 {} \; \
