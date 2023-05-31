@@ -3,7 +3,7 @@ https://hub.docker.com/r/slymuzzle/php
 
 This image works under unprivileged user
 
-### Example of change uid and gid
+### Example of change uid and gid for dev environment
 ```
 && usermod --uid ${USER_UID} webuser \
     && groupmod --gid ${USER_GID} webgroup\
