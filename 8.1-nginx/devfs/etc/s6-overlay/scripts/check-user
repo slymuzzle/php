@@ -1,0 +1,13 @@
+#!/command/with-contenv sh
+
+if [ "$S6_LOGGING" != 1 ]; then
+echo '
+-------------------------------------
+GID/UID
+-------------------------------------'
+echo "
+User uid:    $(id -u webuser)
+User gid:    $(id -g webuser)
+-------------------------------------
+"
+fi

@@ -71,12 +71,15 @@ RUN addgroup \
     php7-fpm \
     php7-sodium \
     php7-pdo \
+    php7-pdo_sqlite \
+    php7-sqlite3 \
     php7-pdo_pgsql \
     php7-pgsql \
     php7-posix \
     php7-redis \
     php7-tokenizer \
-    php7-fileinfo
+    php7-fileinfo \
+    php7-sqlite3
 
 # iconv hack https://github.com/docker-library/php/issues/240
 ENV LD_PRELOAD="/usr/lib/preloadable_libiconv.so php"
